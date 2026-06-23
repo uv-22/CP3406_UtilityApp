@@ -2,76 +2,87 @@
 
 ## Overview
 
-WeatherFit is a utility-style Android application developed for CP3406 Assessment 1.
+WeatherFit is an Android utility application developed for CP3406 Assessment 1 at James Cook University Singapore.
 
-The application provides quick, at-a-glance weather information and personalised outfit recommendations based on current weather conditions. The goal is to help users make simple daily clothing decisions without needing to browse detailed weather forecasts.
+The application provides real-time weather information and personalised outfit recommendations to help users quickly decide what to wear based on current weather conditions. Unlike traditional weather applications that present large amounts of forecast data, WeatherFit focuses on delivering concise and practical information in a clean and easy-to-use interface.
 
-The app is built using Kotlin, Jetpack Compose, Material Design 3, ViewModel architecture, Repository pattern, and Retrofit for API communication.
-
----
-
-## Purpose
-
-Many weather applications provide large amounts of information that can be overwhelming when users simply want to know:
-
-* What is the weather right now?
-* What should I wear?
-* Do I need an umbrella?
-
-WeatherFit focuses only on the most relevant information and presents it in a clean and easy-to-read format.
+The application is built using Kotlin, Jetpack Compose, Material Design 3, ViewModel architecture, the Repository pattern, and Retrofit networking.
 
 ---
 
-## Planned Features
+## Features
 
-### Utility Screen
+### Weather Information
 
-The main screen will display:
+The application displays:
 
 * Current location
 * Current temperature
-* Weather condition
 * Feels-like temperature
+* Weather condition
 * Chance of rain
-* Outfit recommendation
-* Umbrella recommendation
 
-Example:
-
-Temperature: 29°C
-
-Condition: Partly Cloudy
-
-Recommendation:
-
-* Light T-shirt
-* Shorts
-* Carry an umbrella
+Weather data is retrieved from an online weather service using Retrofit.
 
 ---
 
-### Settings Screen
+### Outfit Recommendations
 
-The settings screen allows users to customise app behaviour.
+WeatherFit analyses current weather conditions and provides:
 
-Planned settings include:
+* Clothing recommendations
+* Weather advice
+* Accessory recommendations
+
+Examples include:
+
+* Carrying an umbrella during rainy conditions
+* Wearing lightweight clothing during hot weather
+* Wearing additional layers during cooler conditions
+
+---
+
+### Settings
+
+The settings screen allows users to customise the application.
+
+Current settings include:
 
 * Temperature Unit
 
-    * Celsius
-    * Fahrenheit
+  * Celsius
+  * Fahrenheit
 
-* Outfit Style
+* Weather Location
 
-    * Casual
-    * Smart Casual
+  * Singapore
+  * Tokyo
+  * London
+  * New York
+  * Sydney
 
-* Rain Alert Preference
+Weather data updates dynamically when a different location is selected.
 
-    * Enabled
-    * Disabled
+---
 
-Settings are not required to persist between sessions.
+## User Interface
+
+The application uses Material Design 3 components and Jetpack Compose.
+
+Main interface elements include:
+
+### Utility Screen
+
+* Weather information card
+* Outfit recommendation card
+* Loading indicator
+* Responsive Compose layout
+
+### Settings Screen
+
+* Temperature settings card
+* Location settings card
+* Dropdown location selector
 
 ---
 
@@ -87,6 +98,8 @@ Settings are not required to persist between sessions.
 ### State Management
 
 * ViewModel
+* StateFlow
+* Compose State
 
 ### Data Layer
 
@@ -95,76 +108,68 @@ Settings are not required to persist between sessions.
 ### Networking
 
 * Retrofit
-* Weather API
+* Open-Meteo Weather API
 
-### Dependency Management
+### Architecture Pattern
 
-* Dependency Injection
+The project follows a simplified MVVM architecture:
+
+* View (Compose UI)
+* ViewModel
+* Repository
+* API Service
 
 ---
 
 ## Project Structure
 
-MainActivity.kt
+### MainActivity.kt
 
-Application entry point.
+Application entry point and navigation management.
 
-UtilityScreen()
+### WeatherViewModel.kt
 
-Displays weather information and outfit recommendations.
+Manages weather state, loading states, and outfit recommendation generation.
 
-SettingsScreen()
+### SettingsViewModel.kt
 
-Displays user configuration options.
+Manages application settings and user preferences.
 
-ViewModel
+### WeatherRepository.kt
 
-Manages UI state and business logic.
+Retrieves and processes weather data.
 
-Repository
+### WeatherApiService.kt
 
-Handles data retrieval and processing.
+Defines API endpoints for weather retrieval.
 
-Retrofit Service
+### Components
 
-Retrieves weather data from an external API.
+Reusable UI components:
 
----
+* WeatherCard
+* OutfitRecommendationCard
+* SettingsCard
 
-## Development Progress
+### Models
 
-### Completed
+Application data models including:
 
-* Android Studio environment setup
-* Emulator configuration
-* GitHub repository setup
-* Starter template verification
-* Initial project architecture review
-
-### In Progress
-
-* Weather utility design
-* UI planning
-* Repository implementation
-
-### Planned
-
-* ViewModel integration
-* Retrofit API integration
-* Outfit recommendation logic
-* Error handling
-* UI refinement
-* Testing
+* WeatherData
+* WeatherUiState
+* OutfitRecommendation
+* WeatherLocation
 
 ---
 
-## Technologies
+## Technologies Used
 
 * Kotlin
 * Android Studio
 * Jetpack Compose
 * Material Design 3
 * ViewModel
+* StateFlow
 * Repository Pattern
 * Retrofit
 * Git
@@ -172,9 +177,25 @@ Retrieves weather data from an external API.
 
 ---
 
-## GitHub Repository
+## How to Run
 
-Version control is managed through GitHub with regular commits documenting development progress throughout the project lifecycle.
+1. Clone the repository.
+2. Open the project in Android Studio.
+3. Sync Gradle dependencies.
+4. Start an Android Emulator or connect a physical device.
+5. Run the application.
+
+---
+
+## Future Improvements
+
+Potential future enhancements include:
+
+* Persistent settings using DataStore
+* Additional weather locations
+* Dark mode customisation
+* Extended weather forecasts
+* GPS-based location detection
 
 ---
 
