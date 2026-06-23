@@ -101,11 +101,20 @@ fun UtilityScreen(weatherViewModel: WeatherViewModel) {
             Text("Feels like: ${weather.feelsLike}°C", style = MaterialTheme.typography.bodyLarge)
             Text("Condition: ${weather.condition}", style = MaterialTheme.typography.bodyLarge)
             Text("Rain chance: ${weather.rainChance}%", style = MaterialTheme.typography.bodyLarge)
+        } else if (uiState.isLoading) {
+            Text(
+                "Loading weather...",
+                style = MaterialTheme.typography.bodyLarge
+            )
         } else {
-            Text("Weather data unavailable", style = MaterialTheme.typography.bodyLarge)
+            Text(
+                uiState.errorMessage ?: "Unable to load weather",
+                style = MaterialTheme.typography.bodyLarge
+            )
         }
     }
 }
+
 
 @Composable
 fun SettingsScreen() {
