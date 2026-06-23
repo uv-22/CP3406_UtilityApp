@@ -4,13 +4,19 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import au.edu.jcu.cp3406_cp5307_utilityappstartertemplate.data.PreferencesRepository
 
 class SettingsViewModel : ViewModel() {
 
-    var useFahrenheit by mutableStateOf(false)
+    private val repository = PreferencesRepository()
+
+    var useFahrenheit by mutableStateOf(
+        repository.getPreferences().useFahrenheit
+    )
         private set
 
     fun toggleTemperatureUnit(enabled: Boolean) {
-        useFahrenheit = enabled
+        repository.updateUseFahrenheit(enabled)
+        useFahrenheit = repository.getPreferences().useFahrenheit
     }
 }
