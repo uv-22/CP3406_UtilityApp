@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -36,8 +37,26 @@ fun SettingsCard(
     onToggle: (Boolean) -> Unit,
     onLocationSelected: (WeatherLocation) -> Unit
 ) {
-    var expanded by remember { mutableStateOf(false) }
+    Column(
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        TemperatureUnitCard(
+            useFahrenheit = useFahrenheit,
+            onToggle = onToggle
+        )
 
+        LocationSelectionCard(
+            selectedLocation = selectedLocation,
+            onLocationSelected = onLocationSelected
+        )
+    }
+}
+
+@Composable
+private fun TemperatureUnitCard(
+    useFahrenheit: Boolean,
+    onToggle: (Boolean) -> Unit
+) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(28.dp),
@@ -53,11 +72,11 @@ fun SettingsCard(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
                     imageVector = Icons.Default.Settings,
-                    contentDescription = "Settings"
+                    contentDescription = "Temperature settings"
                 )
 
                 Text(
-                    text = "App Settings",
+                    text = "Temperature Unit",
                     modifier = Modifier.padding(start = 12.dp),
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.SemiBold
@@ -76,36 +95,70 @@ fun SettingsCard(
                     onCheckedChange = onToggle
                 )
             }
+        }
+    }
+}
 
-            Column {
+@Composable
+private fun LocationSelectionCard(
+    selectedLocation: WeatherLocation,
+    onLocationSelected: (WeatherLocation) -> Unit
+) {
+    var expanded by remember { mutableStateOf(false) }
+
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(28.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer
+        )
+    ) {
+        Column(
+            modifier = Modifier.padding(24.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    imageVector = Icons.Default.LocationOn,
+                    contentDescription = "Location settings"
+                )
+
                 Text(
                     text = "Weather Location",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Medium
+                    modifier = Modifier.padding(start = 12.dp),
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.SemiBold
                 )
+            }
 
-                Text(
-                    text = selectedLocation.name,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable { expanded = true }
-                        .padding(vertical = 12.dp),
-                    style = MaterialTheme.typography.bodyLarge
-                )
+            Text(
+                text = "Selected location",
+                style = MaterialTheme.typography.labelLarge
+            )
 
-                DropdownMenu(
-                    expanded = expanded,
-                    onDismissRequest = { expanded = false }
-                ) {
-                    PresetLocations.locations.forEach { location ->
-                        DropdownMenuItem(
-                            text = { Text(location.name) },
-                            onClick = {
-                                onLocationSelected(location)
-                                expanded = false
-                            }
-                        )
-                    }
+            Text(
+                text = selectedLocation.name,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { expanded = true }
+                    .padding(vertical = 12.dp),
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.Medium
+            )
+
+            DropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false }
+            ) {
+                PresetLocations.locations.forEach { location ->
+                    DropdownMenuItem(
+                        text = { Text(location.name) },
+                        onClick = {
+                            onLocationSelected(location)
+                            expanded = false
+                        }
+                    )
                 }
             }
         }
