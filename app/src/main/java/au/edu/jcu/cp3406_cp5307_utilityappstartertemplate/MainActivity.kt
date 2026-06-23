@@ -33,6 +33,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import au.edu.jcu.cp3406_cp5307_utilityappstartertemplate.ui.theme.CP3406_CP5603UtilityAppStarterTemplateTheme
 import au.edu.jcu.cp3406_cp5307_utilityappstartertemplate.viewmodel.WeatherViewModel
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
+import androidx.lifecycle.viewmodel.compose.viewModel
+import au.edu.jcu.cp3406_cp5307_utilityappstartertemplate.viewmodel.SettingsViewModel
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material3.Switch
+import androidx.compose.material3.Text
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,7 +64,10 @@ fun UtilityAppPreview() {
 }
 
 @Composable
-fun UtilityApp(weatherViewModel: WeatherViewModel = viewModel()) {
+fun UtilityApp(
+    weatherViewModel: WeatherViewModel = viewModel(),
+    settingsViewModel: SettingsViewModel = viewModel()
+) {
     var selectedTab by remember { mutableStateOf("Utility") }
 
     Scaffold(
@@ -79,7 +91,7 @@ fun UtilityApp(weatherViewModel: WeatherViewModel = viewModel()) {
         Box(modifier = Modifier.padding(innerPadding)) {
             when (selectedTab) {
                 "Utility" -> UtilityScreen(weatherViewModel)
-                "Settings" -> SettingsScreen()
+                "Settings" -> SettingsScreen(settingsViewModel)
             }
         }
     }
@@ -126,14 +138,35 @@ fun UtilityScreen(weatherViewModel: WeatherViewModel) {
 
 
 @Composable
-fun SettingsScreen() {
+fun SettingsScreen(settingsViewModel: SettingsViewModel) {
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(24.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Text("Settings Screen", style = MaterialTheme.typography.headlineMedium)
-        Text("This is where you can add toggles or preferences.")
+
+        Text(
+            text = "Settings",
+            style = MaterialTheme.typography.headlineMedium
+        )
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+
+            Text(
+                text = "Use Fahrenheit"
+            )
+
+            Switch(
+                checked = settingsViewModel.useFahrenheit,
+                onCheckedChange = {
+                    settingsViewModel.toggleTemperatureUnit(it)
+                }
+            )
+        }
     }
 }
