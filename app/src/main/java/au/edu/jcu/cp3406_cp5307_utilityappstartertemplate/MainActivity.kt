@@ -89,6 +89,7 @@ fun UtilityApp(weatherViewModel: WeatherViewModel = viewModel()) {
 fun UtilityScreen(weatherViewModel: WeatherViewModel) {
     val uiState by weatherViewModel.uiState.collectAsState()
     val weather = uiState.weather
+    val recommendation = uiState.outfitRecommendation
 
     Column(
         modifier = Modifier
@@ -108,21 +109,39 @@ fun UtilityScreen(weatherViewModel: WeatherViewModel) {
             modifier = Modifier.size(32.dp)
         )
 
-
         if (weather != null) {
             Text("Location: ${weather.location}", style = MaterialTheme.typography.bodyLarge)
             Text("Temperature: ${weather.temperature}°C", style = MaterialTheme.typography.bodyLarge)
             Text("Feels like: ${weather.feelsLike}°C", style = MaterialTheme.typography.bodyLarge)
             Text("Condition: ${weather.condition}", style = MaterialTheme.typography.bodyLarge)
             Text("Rain chance: ${weather.rainChance}%", style = MaterialTheme.typography.bodyLarge)
+
+            if (recommendation != null) {
+                Text(
+                    text = recommendation.title,
+                    style = MaterialTheme.typography.headlineSmall
+                )
+                Text(
+                    text = recommendation.clothingAdvice,
+                    style = MaterialTheme.typography.bodyLarge
+                )
+                Text(
+                    text = recommendation.weatherAdvice,
+                    style = MaterialTheme.typography.bodyLarge
+                )
+                Text(
+                    text = recommendation.accessoryAdvice,
+                    style = MaterialTheme.typography.bodyLarge
+                )
+            }
         } else if (uiState.isLoading) {
             Text(
-                "Loading weather...",
+                text = "Loading weather...",
                 style = MaterialTheme.typography.bodyLarge
             )
         } else {
             Text(
-                uiState.errorMessage ?: "Unable to load weather",
+                text = uiState.errorMessage ?: "Unable to load weather",
                 style = MaterialTheme.typography.bodyLarge
             )
         }
