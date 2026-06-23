@@ -36,9 +36,20 @@ import kotlin.math.roundToInt
 @Composable
 fun WeatherCard(
     weather: WeatherData,
+    useFahrenheit: Boolean,
     modifier: Modifier = Modifier
 ) {
     val contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+
+    val temperature = formatTemperature(
+        celsius = weather.temperature,
+        useFahrenheit = useFahrenheit
+    )
+
+    val feelsLike = formatTemperature(
+        celsius = weather.feelsLike,
+        useFahrenheit = useFahrenheit
+    )
 
     Card(
         modifier = modifier.fillMaxWidth(),
@@ -53,13 +64,15 @@ fun WeatherCard(
             modifier = Modifier.padding(24.dp),
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
-            // Location
-            Row(verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Icon(
                     imageVector = Icons.Default.LocationOn,
                     contentDescription = "Location",
                     tint = contentColor.copy(alpha = 0.9f)
                 )
+
                 Text(
                     text = weather.location,
                     modifier = Modifier.padding(start = 8.dp),
@@ -68,18 +81,20 @@ fun WeatherCard(
                 )
             }
 
-            // Temperature + condition
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
                     Text(
-                        text = "${weather.temperature.roundToInt()}°C",
+                        text = temperature,
                         style = MaterialTheme.typography.displayMedium,
                         fontWeight = FontWeight.Bold
                     )
+
                     Text(
                         text = weather.condition,
                         style = MaterialTheme.typography.titleMedium,
@@ -95,9 +110,10 @@ fun WeatherCard(
                 )
             }
 
-            HorizontalDivider(color = contentColor.copy(alpha = 0.15f))
+            HorizontalDivider(
+                color = contentColor.copy(alpha = 0.15f)
+            )
 
-            // Stats
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -105,9 +121,10 @@ fun WeatherCard(
                 WeatherDetailRow(
                     icon = Icons.Default.Thermostat,
                     label = "Feels like",
-                    value = "${weather.feelsLike.roundToInt()}°C",
+                    value = feelsLike,
                     modifier = Modifier.weight(1f)
                 )
+
                 WeatherDetailRow(
                     icon = Icons.Default.WaterDrop,
                     label = "Rain chance",
@@ -136,20 +153,27 @@ private fun WeatherDetailRow(
             modifier = Modifier.padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(6.dp)
         ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Icon(
                     imageVector = icon,
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f),
                     modifier = Modifier.size(18.dp)
                 )
-                Spacer(Modifier.width(6.dp))
+
+                Spacer(
+                    modifier = Modifier.width(6.dp)
+                )
+
                 Text(
                     text = label,
                     style = MaterialTheme.typography.labelLarge,
                     color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f)
                 )
             }
+
             Text(
                 text = value,
                 style = MaterialTheme.typography.headlineSmall,
@@ -159,14 +183,26 @@ private fun WeatherDetailRow(
     }
 }
 
-/** Picks an icon based on the weather condition text for a dynamic look. */
 private fun weatherIconFor(condition: String): ImageVector {
-    val c = condition.lowercase()
+    val lowerCondition = condition.lowercase()
+
     return when {
-        "thunder" in c || "storm" in c -> Icons.Default.Thunderstorm
-        "rain" in c || "drizzle" in c || "shower" in c -> Icons.Default.WaterDrop
-        "snow" in c || "sleet" in c -> Icons.Default.AcUnit
-        "cloud" in c || "overcast" in c || "fog" in c || "mist" in c -> Icons.Default.Cloud
+        "thunder" in lowerCondition || "storm" in lowerCondition -> Icons.Default.Thunderstorm
+        "rain" in lowerCondition || "drizzle" in lowerCondition || "shower" in lowerCondition -> Icons.Default.WaterDrop
+        "snow" in lowerCondition || "sleet" in lowerCondition -> Icons.Default.AcUnit
+        "cloud" in lowerCondition || "overcast" in lowerCondition || "fog" in lowerCondition || "mist" in lowerCondition -> Icons.Default.Cloud
         else -> Icons.Default.WbSunny
+    }
+}
+
+private fun formatTemperature(
+    celsius: Double,
+    useFahrenheit: Boolean
+): String {
+    return if (useFahrenheit) {
+        val fahrenheit = celsius * 9 / 5 + 32
+        "${fahrenheit.roundToInt()}°F"
+    } else {
+        "${celsius.roundToInt()}°C"
     }
 }
