@@ -189,8 +189,12 @@ fun SettingsScreen(settingsViewModel: SettingsViewModel) {
 
         SettingsCard(
             useFahrenheit = settingsViewModel.useFahrenheit,
+            selectedLocation = settingsViewModel.selectedLocation,
             onToggle = {
                 settingsViewModel.toggleTemperatureUnit(it)
+            },
+            onLocationSelected = {
+                settingsViewModel.updateLocation(it)
             }
         )
     }
