@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,7 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -20,8 +20,8 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -29,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import au.edu.jcu.cp3406_cp5307_utilityappstartertemplate.ui.theme.CP3406_CP5603UtilityAppStarterTemplateTheme
+import au.edu.jcu.cp3406_cp5307_utilityappstartertemplate.viewmodel.WeatherViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,7 +52,7 @@ fun UtilityAppPreview() {
 }
 
 @Composable
-fun UtilityApp() {
+fun UtilityApp(weatherViewModel: WeatherViewModel = viewModel()) {
     var selectedTab by remember { mutableStateOf("Utility") }
 
     Scaffold(
@@ -74,7 +75,7 @@ fun UtilityApp() {
     ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
             when (selectedTab) {
-                "Utility" -> UtilityScreen()
+                "Utility" -> UtilityScreen(weatherViewModel)
                 "Settings" -> SettingsScreen()
             }
         }
@@ -82,8 +83,9 @@ fun UtilityApp() {
 }
 
 @Composable
-fun UtilityScreen() {
-    var counter by remember { mutableIntStateOf(0) }
+fun UtilityScreen(weatherViewModel: WeatherViewModel) {
+    val uiState by weatherViewModel.uiState.collectAsState()
+    val weather = uiState.weather
 
     Column(
         modifier = Modifier
@@ -91,11 +93,16 @@ fun UtilityScreen() {
             .padding(24.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Text("Utility Screen", style = MaterialTheme.typography.headlineMedium)
-        Text("Counter: $counter", style = MaterialTheme.typography.bodyLarge)
+        Text("WeatherFit", style = MaterialTheme.typography.headlineMedium)
 
-        Button(onClick = { counter++ }) {
-            Text("Increment")
+        if (weather != null) {
+            Text("Location: ${weather.location}", style = MaterialTheme.typography.bodyLarge)
+            Text("Temperature: ${weather.temperature}°C", style = MaterialTheme.typography.bodyLarge)
+            Text("Feels like: ${weather.feelsLike}°C", style = MaterialTheme.typography.bodyLarge)
+            Text("Condition: ${weather.condition}", style = MaterialTheme.typography.bodyLarge)
+            Text("Rain chance: ${weather.rainChance}%", style = MaterialTheme.typography.bodyLarge)
+        } else {
+            Text("Weather data unavailable", style = MaterialTheme.typography.bodyLarge)
         }
     }
 }
@@ -103,9 +110,10 @@ fun UtilityScreen() {
 @Composable
 fun SettingsScreen() {
     Column(
-        Modifier
+        modifier = Modifier
             .fillMaxSize()
-            .padding(24.dp), Arrangement.spacedBy(16.dp)
+            .padding(24.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         Text("Settings Screen", style = MaterialTheme.typography.headlineMedium)
         Text("This is where you can add toggles or preferences.")
