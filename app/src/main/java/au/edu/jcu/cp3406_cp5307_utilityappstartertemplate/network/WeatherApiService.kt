@@ -9,6 +9,9 @@ interface WeatherApiService {
     suspend fun getWeather(
         @Query("latitude") latitude: Double,
         @Query("longitude") longitude: Double,
-        @Query("current") current: String = "temperature_2m,apparent_temperature"
+        @Query("current") current: String = "temperature_2m,apparent_temperature,weather_code",
+        @Query("hourly") hourly: String = "precipitation_probability",
+        @Query("forecast_days") forecastDays: Int = 1,
+        @Query("timezone") timezone: String = "auto"
     ): WeatherResponse
 }
