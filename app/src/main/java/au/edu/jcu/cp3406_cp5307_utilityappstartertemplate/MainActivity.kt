@@ -36,6 +36,7 @@ import au.edu.jcu.cp3406_cp5307_utilityappstartertemplate.components.WeatherCard
 import au.edu.jcu.cp3406_cp5307_utilityappstartertemplate.ui.theme.CP3406_CP5603UtilityAppStarterTemplateTheme
 import au.edu.jcu.cp3406_cp5307_utilityappstartertemplate.viewmodel.SettingsViewModel
 import au.edu.jcu.cp3406_cp5307_utilityappstartertemplate.viewmodel.WeatherViewModel
+import au.edu.jcu.cp3406_cp5307_utilityappstartertemplate.components.SettingsCard
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -169,21 +170,11 @@ fun SettingsScreen(settingsViewModel: SettingsViewModel) {
             style = MaterialTheme.typography.headlineMedium
         )
 
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(
-                text = "Use Fahrenheit",
-                style = MaterialTheme.typography.bodyLarge
-            )
-
-            Switch(
-                checked = settingsViewModel.useFahrenheit,
-                onCheckedChange = { isChecked ->
-                    settingsViewModel.toggleTemperatureUnit(isChecked)
-                }
-            )
-        }
+        SettingsCard(
+            useFahrenheit = settingsViewModel.useFahrenheit,
+            onToggle = {
+                settingsViewModel.toggleTemperatureUnit(it)
+            }
+        )
     }
 }
