@@ -32,6 +32,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import au.edu.jcu.cp3406_cp5307_utilityappstartertemplate.model.WeatherData
 import kotlin.math.roundToInt
+import androidx.compose.ui.graphics.Color
 
 @Composable
 fun WeatherCard(
@@ -40,6 +41,7 @@ fun WeatherCard(
     modifier: Modifier = Modifier
 ) {
     val contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+    val cardColor = weatherCardColor(weather.condition)
 
     val temperature = formatTemperature(
         celsius = weather.temperature,
@@ -56,7 +58,7 @@ fun WeatherCard(
         shape = RoundedCornerShape(28.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            containerColor = cardColor,
             contentColor = contentColor
         )
     ) {
@@ -204,5 +206,17 @@ private fun formatTemperature(
         "${fahrenheit.roundToInt()}°F"
     } else {
         "${celsius.roundToInt()}°C"
+    }
+}
+private fun weatherCardColor(condition: String): Color {
+    val c = condition.lowercase()
+
+    return when {
+        "clear" in c || "sun" in c -> Color(0xFFFFCC80)
+        "cloud" in c -> Color(0xFFB0BEC5)
+        "rain" in c || "drizzle" in c -> Color(0xFF81D4FA)
+        "storm" in c || "thunder" in c -> Color(0xFF7986CB)
+        "snow" in c -> Color(0xFFE1F5FE)
+        else -> Color(0xFFE3F2FD)
     }
 }
