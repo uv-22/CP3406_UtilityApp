@@ -1,22 +1,39 @@
 package au.edu.jcu.cp3406_cp5307_utilityappstartertemplate.viewmodel
 
 import androidx.lifecycle.ViewModel
-import au.edu.jcu.cp3406_cp5307_utilityappstartertemplate.model.WeatherData
+import androidx.lifecycle.viewModelScope
 import au.edu.jcu.cp3406_cp5307_utilityappstartertemplate.model.WeatherUiState
+import au.edu.jcu.cp3406_cp5307_utilityappstartertemplate.repository.WeatherRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import au.edu.jcu.cp3406_cp5307_utilityappstartertemplate.repository.WeatherRepository
+import kotlinx.coroutines.launch
 
 class WeatherViewModel : ViewModel() {
 
     private val repository = WeatherRepository()
 
     private val _uiState = MutableStateFlow(
-        WeatherUiState(
-            weather = repository.getWeather()
-        )
+        WeatherUiState(isLoading = true)
     )
 
     val uiState: StateFlow<WeatherUiState> = _uiState.asStateFlow()
+
+    init {
+        loadWeather()
+    }
+
+    private fun loadWeather() {
+        viewModelScope.launch {
+            try {
+                _uiState.value = WeatherUiState(
+                    weather = repository.getWeather()
+                )
+            } catch (e: Exception) {
+                _uiState.value = WeatherUiState(
+                    errorMessage = e.message
+                )
+            }
+        }
+    }
 }
