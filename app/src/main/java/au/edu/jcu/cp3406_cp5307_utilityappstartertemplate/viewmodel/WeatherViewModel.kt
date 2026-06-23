@@ -27,9 +27,12 @@ class WeatherViewModel : ViewModel() {
     private fun loadWeather() {
         viewModelScope.launch {
             try {
+                _uiState.value = WeatherUiState(isLoading = true)
+
                 val weather = repository.getWeather()
 
                 _uiState.value = WeatherUiState(
+                    isLoading = false,
                     weather = weather,
                     outfitRecommendation = OutfitRules.getRecommendation(
                         temperature = weather.temperature,
@@ -38,7 +41,8 @@ class WeatherViewModel : ViewModel() {
                 )
             } catch (e: Exception) {
                 _uiState.value = WeatherUiState(
-                    errorMessage = e.message
+                    isLoading = false,
+                    errorMessage = e.message ?: "Unable to load weather data"
                 )
             }
         }

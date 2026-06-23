@@ -37,6 +37,10 @@ import au.edu.jcu.cp3406_cp5307_utilityappstartertemplate.ui.theme.CP3406_CP5603
 import au.edu.jcu.cp3406_cp5307_utilityappstartertemplate.viewmodel.SettingsViewModel
 import au.edu.jcu.cp3406_cp5307_utilityappstartertemplate.viewmodel.WeatherViewModel
 import au.edu.jcu.cp3406_cp5307_utilityappstartertemplate.components.SettingsCard
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.size
+import androidx.compose.ui.Alignment
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -144,10 +148,23 @@ fun UtilityScreen(
                 )
             }
         } else if (uiState.isLoading) {
-            Text(
-                text = "Loading weather...",
-                style = MaterialTheme.typography.bodyLarge
-            )
+
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+
+                CircularProgressIndicator()
+
+                Spacer(
+                    modifier = Modifier.size(16.dp)
+                )
+
+                Text(
+                    text = "Loading weather..."
+                )
+            }
         } else {
             Text(
                 text = uiState.errorMessage ?: "Unable to load weather",
