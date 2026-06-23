@@ -109,7 +109,8 @@ fun UtilityApp(
                 )
 
                 "Settings" -> SettingsScreen(
-                    settingsViewModel = settingsViewModel
+                    settingsViewModel = settingsViewModel,
+                    weatherViewModel = weatherViewModel
                 )
             }
         }
@@ -175,7 +176,12 @@ fun UtilityScreen(
 }
 
 @Composable
-fun SettingsScreen(settingsViewModel: SettingsViewModel) {
+fun SettingsScreen(
+    settingsViewModel: SettingsViewModel,
+    weatherViewModel: WeatherViewModel
+) {
+    val selectedLocation by settingsViewModel.selectedLocation.collectAsState()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -189,12 +195,13 @@ fun SettingsScreen(settingsViewModel: SettingsViewModel) {
 
         SettingsCard(
             useFahrenheit = settingsViewModel.useFahrenheit,
-            selectedLocation = settingsViewModel.selectedLocation,
+            selectedLocation = selectedLocation,
             onToggle = {
                 settingsViewModel.toggleTemperatureUnit(it)
             },
             onLocationSelected = {
                 settingsViewModel.updateLocation(it)
+                weatherViewModel.loadWeather(it)
             }
         )
     }

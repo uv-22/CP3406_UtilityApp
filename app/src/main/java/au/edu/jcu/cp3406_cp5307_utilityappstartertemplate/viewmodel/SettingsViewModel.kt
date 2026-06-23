@@ -7,6 +7,9 @@ import androidx.lifecycle.ViewModel
 import au.edu.jcu.cp3406_cp5307_utilityappstartertemplate.data.PreferencesRepository
 import au.edu.jcu.cp3406_cp5307_utilityappstartertemplate.data.PresetLocations
 import au.edu.jcu.cp3406_cp5307_utilityappstartertemplate.model.WeatherLocation
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 class SettingsViewModel : ViewModel() {
 
@@ -16,13 +19,14 @@ class SettingsViewModel : ViewModel() {
         repository.getPreferences().useFahrenheit
     )
         private set
-    var selectedLocation by mutableStateOf(
-        PresetLocations.defaultLocation
-    )
-        private set
+    private val _selectedLocation =
+        MutableStateFlow(PresetLocations.defaultLocation)
+
+    val selectedLocation: StateFlow<WeatherLocation> =
+        _selectedLocation.asStateFlow()
 
     fun updateLocation(location: WeatherLocation) {
-        selectedLocation = location
+        _selectedLocation.value = location
     }
     fun toggleTemperatureUnit(enabled: Boolean) {
         repository.updateUseFahrenheit(enabled)

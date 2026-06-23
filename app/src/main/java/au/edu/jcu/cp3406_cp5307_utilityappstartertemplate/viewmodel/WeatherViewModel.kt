@@ -3,6 +3,8 @@ package au.edu.jcu.cp3406_cp5307_utilityappstartertemplate.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import au.edu.jcu.cp3406_cp5307_utilityappstartertemplate.data.OutfitRules
+import au.edu.jcu.cp3406_cp5307_utilityappstartertemplate.data.PresetLocations
+import au.edu.jcu.cp3406_cp5307_utilityappstartertemplate.model.WeatherLocation
 import au.edu.jcu.cp3406_cp5307_utilityappstartertemplate.model.WeatherUiState
 import au.edu.jcu.cp3406_cp5307_utilityappstartertemplate.repository.WeatherRepository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,15 +23,19 @@ class WeatherViewModel : ViewModel() {
     val uiState: StateFlow<WeatherUiState> = _uiState.asStateFlow()
 
     init {
-        loadWeather()
+        loadWeather(PresetLocations.defaultLocation)
     }
 
-    private fun loadWeather() {
+    fun loadWeather(location: WeatherLocation) {
         viewModelScope.launch {
             try {
                 _uiState.value = WeatherUiState(isLoading = true)
 
-                val weather = repository.getWeather()
+                val weather = repository.getWeather(
+                    latitude = location.latitude,
+                    longitude = location.longitude,
+                    locationName = location.name
+                )
 
                 _uiState.value = WeatherUiState(
                     isLoading = false,
